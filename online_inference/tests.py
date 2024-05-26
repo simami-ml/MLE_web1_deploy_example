@@ -87,6 +87,11 @@ class TestOnlineInference(unittest.TestCase):
             self.assertAlmostEqual(response.json()['predicted_values'][0], 0.036, delta=0.005)
             self.assertAlmostEqual(response.json()['predicted_values'][2], 0.71, delta=0.005)
 
+    def test_is_ready(self):
+        with TestClient(app) as client:
+            responce = client.get('/is_ready')
+            self.assertEqual(response.status_code, 200)
+
 
     def test_is_ready(self):
         with TestClient(app) as client:
