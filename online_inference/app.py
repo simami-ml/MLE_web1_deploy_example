@@ -79,20 +79,23 @@ def is_ready():
         content = jsonable_encoder({"Message": msg})
     )
 
-@app.get('/is_ready')
-def is_ready():
-    if model_lgbm:
-        status_code = 200
-        msg = "Model is ready"
-    else:
-        status_code = 500
-        msg = "Model not found"
-    
-    return JSONResponse(
-        status_code = status_code,
-        content = jsonable_encoder({"Message": msg})
+@app.post('/will_it_rain', response_model=OutputData)
 
-    )
+def will_it_rain(request: InputData):
+    data = get_data(request) # Парсим данные из запроса в DataFrame
+    logger.info(msg=f"Data loaded for weather prediction")
+    
+    try:
+        y_pred = model_lgbm.predict_proba(data)[:, 1] # Получаем предсказание
+        result = [1 if x > 0.6 else 0 for x in y_pred]
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail="Error: something went wrong while predicting weather"
+        )
+    logger.info(msg=f"Weather prediction finished. Is it going to rain? {result}")    
+    
+    return OutputData(predicted_values=result)
 
 # Функция, срабатывающая при ошибке парсинга данных
 # (если данные в post запросе имеют неправильный формат)
