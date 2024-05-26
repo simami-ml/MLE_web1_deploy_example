@@ -89,12 +89,6 @@ class TestOnlineInference(unittest.TestCase):
 
     def test_is_ready(self):
         with TestClient(app) as client:
-            responce = client.get('/is_ready')
-            self.assertEqual(response.status_code, 200)
-
-
-    def test_is_ready(self):
-        with TestClient(app) as client:
             response = client.get('/is_ready')
             self.assertEqual(response.status_code, 200)
 
