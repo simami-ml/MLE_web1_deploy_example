@@ -79,7 +79,20 @@ def is_ready():
         content = jsonable_encoder({"Message": msg})
     )
 
+@app.get('/is_ready')
+def is_ready():
+    if model_lgbm:
+        status_code = 200
+        msg = "Model is ready"
+    else:
+        status_code = 500
+        msg = "Model not found"
+    
+    return JSONResponse(
+        status_code = status_code,
+        content = jsonable_encoder({"Message": msg})
 
+    )
 
 # Функция, срабатывающая при ошибке парсинга данных
 # (если данные в post запросе имеют неправильный формат)
